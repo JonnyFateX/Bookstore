@@ -65,6 +65,7 @@ input[type="number"]{
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-right: none;
+  width: 130px;
 }
 .inp-btn{
   background-color: transparent;
