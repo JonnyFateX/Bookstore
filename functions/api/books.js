@@ -1,7 +1,4 @@
-import { Faker, base} from '@faker-js/faker';
-import { en_US, en } from '@faker-js/faker';
-import { es_MX, es } from '@faker-js/faker';
-import { ru } from '@faker-js/faker';
+import { fakerEN, fakerDE, fakerNL } from '@faker-js/faker';
 
 export async function onRequestPost(context){
     const data = await context.request.json()
@@ -19,20 +16,20 @@ export async function onRequestPost(context){
 
     let faker
     if(language === "English"){
-        faker = new Faker({ locale:[en_US, en, base] })
-    }else if(language === "Spanish"){
-        faker = new Faker({ locale:[es_MX, es, base] })
-    }else if(language === "Russian"){
-        faker = new Faker({ locale:[ru, base] })
+        faker = fakerEN
+    }else if(language === "German"){
+        faker = fakerDE
+    }else if(language === "Dutch"){
+        faker = fakerNL
     }else{
-        faker = new Faker({ locale:[en_US, en, base] })
+        faker = fakerEN
     }
 
     const books = []
     faker.seed(seed)
     for(let i = 0; i < parseInt(amount); i++){
         books.push({
-            title: faker.book.title(),
+            title: faker.book.title({ language: "ES"}),
             isbn: faker.commerce.isbn(),
             authors: getAuthors(faker),
             publisher: faker.book.publisher(),
@@ -60,12 +57,8 @@ function getAuthors(faker){
 }
 
 function getReviews(faker, numOfReviews){
-    const num = faker.number.int({
-        min: 0,
-        max: parseInt(numOfReviews)
-    })
     const reviews = []
-    for(let i = 0; i < num; i++){
+    for(let i = 0; i < parseInt(numOfReviews); i++){
         let preComment = faker.word.words({
             count: {
                 min: 3,

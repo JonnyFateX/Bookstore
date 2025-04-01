@@ -5,7 +5,7 @@ import {
 import { faker } from '@faker-js/faker';
 import Dropdown from 'react-dropdown';
 import {Slider} from 'primereact/slider';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { FaShuffle } from "react-icons/fa6";
 import { AiOutlineLike } from "react-icons/ai";
 import 'react-dropdown/style.css';
@@ -14,6 +14,9 @@ import './book.css'
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
 export default function App() {
+  const [amount, setAmount] = useState(20)
+  const [fetching, setFetching] = useState(false)
+  const tableContainerRef = useRef(null);
   const [sliderValue, setSliderValue] = useState(5)
   const [formData, setFormData] = useState({
     language: "English",
@@ -21,7 +24,7 @@ export default function App() {
     reviews: "5.0"
   })
   const options = [
-    'English', 'Spanish', 'Russian'
+    'English', 'German', 'Dutch'
   ]
   const defaultOption = options[0]
 
@@ -53,25 +56,29 @@ export default function App() {
       publisher: "Universal, 2016",
       likes: 8,
       img: "https://picsum.photos/seed/7zFCS6/130/220",
-    }
+    },
 ])
 
   useEffect(() => {
+    setFetching(true)
     fetch("/api/books", {
       method: "POST",
       body: JSON.stringify({
-        amount: 20,
+        amount: amount,
         seed: formData.seed,
-        language: "en_US",
+        language: formData.language,
         likes: sliderValue,
         reviews: formData.reviews
       })
     })
       .then(res => res.json())
       .then(data => {
-        setData(data["books"])
+        setData(prevData => {
+          setFetching(false)
+          return data["books"]
+        })
       })
-  }, [formData["language"], formData["seed"], formData["reviews"], sliderValue])
+  }, [formData["language"], formData["seed"], formData["reviews"], sliderValue, amount])
 
   const columns = useMemo(
     () => [
@@ -107,6 +114,22 @@ export default function App() {
     ],
     [],
   )
+
+  const fetchMoreOnBottomReached = (target) => {
+    const { scrollTop, scrollHeight, clientHeight } = target;
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      
+      if(!fetching){
+        console.log("here")
+        setFetching(true)
+        setAmount(prevAmount => {
+          const newAmount = prevAmount + 10
+          return newAmount
+        })
+      }
+    }
+  }
+
   const table = useMaterialReactTable({
     columns,
     data,
@@ -117,6 +140,12 @@ export default function App() {
     enableColumnActions: false,
     enablePagination: false,
     enableExpandAll: false,
+    muiTableContainerProps: {
+      ref: tableContainerRef,
+      sx: { maxHeight: '75vh' },
+      onScroll: (event) =>
+        fetchMoreOnBottomReached(event.target),
+    },
     muiExpandButtonProps: ({ row, table }) => ({
       onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
       sx: {
@@ -127,6 +156,9 @@ export default function App() {
     renderDetailPanel: ({ row }) =>
       {
         const book = row.original
+        if(book.separator){
+          return
+        }
         if(book.title){
           return (
             <div className='book-container'>
@@ -256,7 +288,9 @@ export default function App() {
           </div>
         </form>
       </header>
-      <MaterialReactTable table={table} />
+      <section>
+        <MaterialReactTable table={table}/>
+      </section>
     </>
   )
 }

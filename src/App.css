@@ -29,6 +29,12 @@ header{
   box-shadow: 0 3px 6px rgb(159, 159, 159);
 }
 
+section{
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
 form{
   display: flex;
   justify-content: center;
