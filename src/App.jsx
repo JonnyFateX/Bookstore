@@ -3,12 +3,11 @@ import {
   useMaterialReactTable,
 } from 'material-react-table';
 import { faker } from '@faker-js/faker';
-import Dropdown from 'react-dropdown';
-import {Slider} from 'primereact/slider';
+import { Slider } from 'primereact/slider';
+import { Dropdown } from 'primereact/dropdown';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { FaShuffle } from "react-icons/fa6";
 import { AiOutlineLike } from "react-icons/ai";
-import 'react-dropdown/style.css';
 import './App.css'
 import './book.css'
 import "primereact/resources/themes/lara-light-cyan/theme.css";
@@ -239,10 +238,9 @@ export default function App() {
         >
           <div className='input-container'>
             <span className='dropdown-label'>Language</span>
-            <Dropdown 
-              controlClassName="dropdown-border"
+            <Dropdown
               options={options}
-              value={defaultOption}
+              value={formData["language"]}
               onChange={(selection) => {
                 setFormData(prevData => {
                   return {

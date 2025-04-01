@@ -60,7 +60,7 @@ input{
 }
 
 input[type="number"]{
-  height: 35px;
+  height: 44px;
 }
 .input-button::-webkit-outer-spin-button,
 .input-button::-webkit-inner-spin-button {
@@ -71,7 +71,7 @@ input[type="number"]{
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-right: none;
-  width: 130px;
+  width: 170px;
 }
 .inp-btn{
   background-color: transparent;
