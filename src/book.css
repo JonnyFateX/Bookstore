@@ -1,0 +1,74 @@
+.book-container{
+    display: flex;
+    flex-direction: row;
+    gap: 5em;
+}
+
+h1, h2, h3, h4, p{
+    margin: 0;
+}
+
+h1{
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+h2{
+    margin-top: 0.15em;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+h3{
+    margin-top: 0.15em;
+    margin-bottom: 0.75em;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgb(175, 174, 174);
+}
+
+.review-span{
+    color: rgb(175, 174, 174);
+    display: block;
+    margin: 0;
+    margin-bottom: 1em;
+}
+
+.image-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    margin-left: 2em;
+}
+
+.img{
+    max-height: 220px;
+    max-width: 130px;
+    min-height: 220px;
+    min-width: 130px;
+}
+
+.img > img{
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    height: inherit;
+    width: inherit;
+    object-fit: cover;
+    margin: 0;
+    padding: 0;
+}
+
+.likes{
+    width: 75px;
+    display: flex;
+    font-size: 1rem;
+    background-color: rgb(4, 223, 117);
+    padding: 0.25em;
+    margin-top: 0.5em;
+    border-radius: 6px;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25em;
+}

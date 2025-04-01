@@ -1,19 +1,22 @@
-import { faker } from '@faker-js/faker';
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
+import { faker } from '@faker-js/faker';
 import Dropdown from 'react-dropdown';
 import {Slider} from 'primereact/slider';
 import { useState, useEffect, useMemo } from 'react';
 import { FaShuffle } from "react-icons/fa6";
+import { AiOutlineLike } from "react-icons/ai";
 import 'react-dropdown/style.css';
 import './App.css'
+import './book.css'
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
 export default function App() {
-  const [sliderValue, setSliderValue] = useState(0)
+  const [sliderValue, setSliderValue] = useState(5)
   const [formData, setFormData] = useState({
+    language: "English",
     seed: "6543224123",
     reviews: "5.0"
   })
@@ -28,23 +31,62 @@ export default function App() {
       isbn: "978-1-145-32423-8",
       title: "Life's Method",
       authors: ["Jay Clark", "George Morrison"].join(", "),
-      publisher: "JGroup, 2022"
+      publisher: "JGroup, 2022",
+      likes: 5,
+      reviews: [
+        {
+          comment: "Amazing book.",
+          author: "Jonathan Martinez"
+        },
+        {
+          comment: "A great approach to life.",
+          author: "Mark Stark"
+        },
+      ],
+      img: "https://picsum.photos/seed/dpwpR2Mi/130/220?grayscale"
     },
     {
       id: 2,
       isbn: "978-2-765-69223-2",
       title: "Hunting",
       authors: ["Darla Gray"].join(", "),
-      publisher: "Universal, 2016"
+      publisher: "Universal, 2016",
+      likes: 8,
+      img: "https://picsum.photos/seed/7zFCS6/130/220",
     }
 ])
+
+  useEffect(() => {
+    fetch("/api/books", {
+      method: "POST",
+      body: JSON.stringify({
+        amount: 20,
+        seed: formData.seed,
+        language: "en_US",
+        likes: sliderValue,
+        reviews: formData.reviews
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        setData(data["books"])
+      })
+  }, [formData["language"], formData["seed"], formData["reviews"], sliderValue])
 
   const columns = useMemo(
     () => [
       {
         header: '#',
-        accessorFn: (dataRow, index) => index + 1,
-        maxSize: 15
+        accessorKey: "id",
+        maxSize: 15,
+        Cell: ({ renderedCellValue, row }) =>
+          row.original?.required ? (
+            <span className='strong'>
+              {renderedCellValue}
+            </span>
+          ) : (
+            renderedCellValue
+          ),
       },
       {
         header: 'ISBN',
@@ -83,9 +125,47 @@ export default function App() {
       },
     }),
     renderDetailPanel: ({ row }) =>
-      row.original.title ? (
-        <h1>GGs</h1>
-      ) : null,
+      {
+        const book = row.original
+        if(book.title){
+          return (
+            <div className='book-container'>
+              <div className='image-container'>
+                <div className='img'>
+                  <img src={book.img}/>
+                </div>
+                <span className='likes'>{book.likes} <AiOutlineLike /></span>
+              </div>
+              <div className='info-container'>
+                <h1>{book.title}</h1>
+                <h2>by {book.authors}</h2>
+                <h3>{book.publisher}</h3>
+                {
+                  book.reviews?
+                  <>
+                    <h2>Reviews:</h2>
+                    {
+                      book.reviews.map(review => {
+                        return (
+                          <>
+                            <p>{review.comment}</p>
+                            <span className='review-span'>- {review.author}</span>
+                          </>
+                        )
+                      })
+                    }
+                  </>:
+                  ""
+                }
+              </div>
+            </div>
+          )
+        }else{
+          return (
+            <></>
+          )
+        }
+      },
   })
 
   useEffect(() =>{
@@ -131,6 +211,14 @@ export default function App() {
               controlClassName="dropdown-border"
               options={options}
               value={defaultOption}
+              onChange={(selection) => {
+                setFormData(prevData => {
+                  return {
+                    ...prevData,
+                    language: selection.value
+                  }
+                })
+              }}
               placeholder="Choose a language"
             />
           </div>

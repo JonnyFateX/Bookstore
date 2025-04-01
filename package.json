@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.6.0",
+    "@intouchg/random-phrase": "^0.1.0",
     "material-react-table": "^3.2.1",
     "primereact": "^10.9.3",
     "react": "^19.0.0",
